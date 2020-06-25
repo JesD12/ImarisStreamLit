@@ -14,7 +14,8 @@ uploaded_file = st.sidebar.file_uploader("Choose a xls file", 'xls')
 if uploaded_file is not None:
     xlsfile = pd.ExcelFile(uploaded_file)
     sheetnames = xlsfile.sheet_names
-    sheet = st.sidebar.selectbox('Which sheet to choose', sheetnames)
+    sheet = st.sidebar.selectbox('Sheet names', sheetnames)
+    ShowData = st.sidebar.checkbox("Show raw data", True)
     ready = True
 
 
@@ -55,13 +56,18 @@ def extractintensity(file,sheetnames):
 
 
 if ready:
+    # TODO makes a better way of seperating data generation and visual presentation
     data = loadsheet(xlsfile, sheet)
-    st.write(data)
+    if ShowData:
+        st.write("Data from selected sheet")
+        st.write(data)
 
     # Extract all information about channels.
     listofchannels, dataframeintensity = extractintensity(xlsfile, sheetnames)
-    st.write('Intensity information')
-    st.write(dataframeintensity)
+    ShowIntensity = st.sidebar.checkbox("Show intensity dataframe", True)
+    if ShowIntensity:
+        st.write('Intensity information')
+        st.write(dataframeintensity)
 
     if re.search(r'intensity', sheet, re.IGNORECASE):
         columnnames = data.columns
