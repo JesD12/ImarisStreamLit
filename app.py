@@ -8,7 +8,7 @@ st.title('Explore Imaris data file (xlxs)')
 
 ready = False
 
-# make a fileiput widget
+# make a file input widget
 uploaded_file = st.sidebar.file_uploader("Choose a xls file", 'xls')
 
 if uploaded_file is not None:
@@ -54,6 +54,11 @@ def extractintensity(file,sheetnames):
 
     return listofchannels, resultdf
 
+@st.cache
+def selectsmaples(sample, intensitydf):
+    if sample is not 'all':
+        return intensitydf[intensitydf['Surpass Object'].isin([sample])]
+    return intensitydf
 
 if ready:
     # TODO makes a better way of seperating data generation and visual presentation
@@ -69,9 +74,15 @@ if ready:
         st.write('Intensity information')
         st.write(dataframeintensity)
 
-    if re.search(r'intensity', sheet, re.IGNORECASE):
-        columnnames = data.columns
-        makehistogram(data[columnnames[0]])
-        #st.write(currentfigure)
+    samplelist =[sample for sample in pd.unique(dataframeintensity["Surpass Object"])]
+    samplelist.append('all')
+    sample = st.sidebar.selectbox('Select a sample', samplelist)
+    sampleddf = selectsmaples(sample, dataframeintensity)
+    st.write(sampleddf)
+
+    # if re.search(r'intensity', sheet, re.IGNORECASE):
+    #     columnnames = data.columns
+    #     makehistogram(data[columnnames[0]])
+    #     #st.write(currentfigure)
 
 
