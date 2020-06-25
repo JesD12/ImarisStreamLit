@@ -1,8 +1,15 @@
 <component name="ProjectDictionaryState">
   <dictionary name="zhd840">
     <words>
+      <w>colname</w>
+      <w>intensitydf</w>
+      <w>intensityindex</w>
+      <w>listofchannels</w>
+      <w>resultdf</w>
       <w>selectedsheet</w>
+      <w>sheetlistintensity</w>
       <w>sheetnames</w>
+      <w>tempdataframe</w>
       <w>xlsfile</w>
     </words>
   </dictionary>

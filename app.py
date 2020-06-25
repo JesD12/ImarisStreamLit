@@ -30,9 +30,10 @@ def makehistogram(histdata):
 
 
 def extractintensity(file,sheetnames):
+    # Find the sheets with intensity information and combine them to a single dataframe
     intensityindex = [re.search(r'intensity', sheet_a, re.IGNORECASE) for sheet_a in sheetnames]
     sheetlistintensity = [sheetname for sheetname, intindx in zip(sheetnames, intensityindex) if intindx]
-    st.write(sheetlistintensity)
+    # intialize two variables
     listofchannels = []
     intensitydf = None
     for sheet_i in sheetlistintensity:
@@ -43,8 +44,13 @@ def extractintensity(file,sheetnames):
 
         intensitydf[name] = tempdataframe.iloc[:,0]
         listofchannels.append(name)
-    #TODO find a way to sort the dataframe so all ch 1 is collected in one place
-    #resultdf = [intensitydf.iloc[:,0:3], intensitydf.sort()]
+
+    # Sort the columns to keep the first tree intact as identifiers and then sort the intensity column to group by
+    # channel
+    colname = [name for name in intensitydf.columns[3:]]
+    colname.sort()
+    resultdf = pd.concat([intensitydf.iloc[:, 0:3], intensitydf[colname]], axis=1)
+
     return listofchannels, resultdf
 
 
@@ -54,6 +60,7 @@ if ready:
 
     # Extract all information about channels.
     listofchannels, dataframeintensity = extractintensity(xlsfile, sheetnames)
+    st.write('Intensity information')
     st.write(dataframeintensity)
 
     if re.search(r'intensity', sheet, re.IGNORECASE):
