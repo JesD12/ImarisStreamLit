@@ -38,12 +38,12 @@ def extractintensity(file,sheetnames):
     listofchannels = []
     intensitydf = None
     for sheet_i in sheetlistintensity:
-        name = 'ch ' + re.findall(r'.*ch=(\d+)', sheet_i, re.IGNORECASE)[0] + '  ' + re.findall(r'Intensity (\w+)', sheet_i, re.IGNORECASE)[0]
+        name = 'ch ' + re.findall(r'.*ch=(\S+)', sheet_i, re.IGNORECASE)[0] + '  ' + re.findall(r'Intensity (\w+)', sheet_i, re.IGNORECASE)[0]
         tempdataframe = pd.read_excel(file, sheet_i, header=1)
         if intensitydf is None:
-            intensitydf = tempdataframe[['ID', 'Surpass Object', 'Category']]
+            intensitydf = tempdataframe[['ID', 'Surpass Object', 'Category']].copy()
 
-        intensitydf[name] = tempdataframe.iloc[:,0]
+        intensitydf.loc[:, name] = tempdataframe.iloc[:, 0]
         listofchannels.append(name)
 
     # Sort the columns to keep the first tree intact as identifiers and then sort the intensity column to group by
@@ -56,7 +56,7 @@ def extractintensity(file,sheetnames):
 
 @st.cache
 def selectsmaples(sample, intensitydf):
-    if sample is not 'all':
+    if sample != 'all':
         return intensitydf[intensitydf['Surpass Object'].isin([sample])]
     return intensitydf
 
